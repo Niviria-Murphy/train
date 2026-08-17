@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>原昇量子 · NeuPulse Studio — 里德伯中性原子量子机全栈控制软件（演示）</title>
+<style>
+  :root{
+    --bg:#0a0e1a; --bg2:#0f1530; --panel:rgba(255,255,255,.04);
+    --line:rgba(255,255,255,.10); --txt:#e8ecf6; --muted:#9aa6c4;
+    --purple:#8b6cf0; --purple2:#a78bfa; --orange:#ff9a52; --cyan:#4fd6e0;
+    --green:#3ddc97; --red:#ff6b8a; --gold:#ffd166;
+    --radius:16px;
+    --grad:linear-gradient(120deg,#8b6cf0 0%,#4fd6e0 50%,#ff9a52 100%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:radial-gradient(1200px 700px at 80% -10%,rgba(139,108,240,.18),transparent 60%),
+               radial-gradient(900px 600px at -10% 20%,rgba(79,214,224,.12),transparent 55%),
+               var(--bg);
+    color:var(--txt); line-height:1.6; overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+  /* NAV */
+  nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
+    background:rgba(10,14,26,.72);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.5px}
+  .logo{width:30px;height:30px;border-radius:9px;background:var(--grad);
+    box-shadow:0 0 18px rgba(139,108,240,.6);position:relative}
+  .logo::after{content:"";position:absolute;inset:7px;border-radius:5px;background:var(--bg);
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.5)}
+  .brand small{display:block;font-weight:500;color:var(--muted);font-size:11px;letter-spacing:0}
+  .navlinks{display:flex;gap:26px;font-size:14px;color:var(--muted)}
+  .navlinks a:hover{color:var(--txt)}
+  .tag{font-size:12px;color:var(--cyan);border:1px solid rgba(79,214,224,.4);
+    padding:4px 10px;border-radius:999px;background:rgba(79,214,224,.08)}
+  /* HERO */
+  header.hero{padding:74px 0 40px;text-align:center}
+  .kicker{display:inline-block;font-size:13px;color:var(--orange);letter-spacing:3px;
+    border:1px solid rgba(255,154,82,.35);padding:6px 16px;border-radius:999px;margin-bottom:22px}
+  h1{font-size:clamp(30px,5vw,52px);line-height:1.15;font-weight:850;letter-spacing:-.5px}
+  h1 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{margin:20px auto 0;max-width:760px;color:var(--muted);font-size:17px}
+  .cta{margin-top:30px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .btn{padding:13px 26px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;border:0;transition:.2s}
+  .btn.primary{background:var(--grad);color:#0a0e1a;box-shadow:0 8px 26px rgba(139,108,240,.4)}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(139,108,240,.55)}
+  .btn.ghost{background:var(--panel);color:var(--txt);border:1px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--purple2)}
+  /* SECTIONS */
+  section{padding:56px 0;scroll-margin-top:70px}
+  .sec-title{font-size:26px;font-weight:800;margin-bottom:6px}
+  .sec-sub{color:var(--muted);margin-bottom:30px}
+  .grid{display:grid;gap:18px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:860px){.g3,.g2{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px;position:relative;overflow:hidden;transition:.25s}
+  .card:hover{transform:translateY(-3px);border-color:rgba(139,108,240,.45);
+    box-shadow:0 14px 40px rgba(0,0,0,.4)}
+  .card .layer{font-size:12px;letter-spacing:1.5px;color:var(--cyan);font-weight:700}
+  .card h3{font-size:18px;margin:8px 0 10px}
+  .card p{color:var(--muted);font-size:14px}
+  .src{margin-top:14px;font-size:11.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px}
+  .src b{color:var(--orange)}
+  .innov .num{font-size:30px;font-weight:850;background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  /* PLAYER */
+  .player{display:grid;grid-template-columns:240px 1fr;gap:22px}
+  @media(max-width:860px){.player{grid-template-columns:1fr}}
+  .stepper{display:flex;flex-direction:column;gap:6px}
+  .step{display:flex;gap:13px;align-items:flex-start;padding:13px 14px;border-radius:12px;
+    border:1px solid transparent;cursor:pointer;transition:.2s;background:transparent}
+  .step:hover{background:var(--panel)}
+  .step.active{background:linear-gradient(90deg,rgba(139,108,240,.18),transparent);
+    border-color:rgba(139,108,240,.4)}
+  .step.done .dot{background:var(--green);border-color:var(--green);color:#06121a}
+  .dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;
+    flex:0 0 auto;color:var(--muted);transition:.2s}
+  .step.active .dot{border-color:var(--purple2);color:var(--purple2)}
+  .step .t{font-size:14px;font-weight:700}
+  .step .d{font-size:11.5px;color:var(--muted)}
+  .stage{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px;min-height:430px;position:relative}
+  .stage-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .stage-head h3{font-size:19px}
+  .pill{font-size:12px;padding:4px 12px;border-radius:999px;background:rgba(79,214,224,.1);
+    color:var(--cyan);border:1px solid rgba(79,214,224,.3)}
+  .fade{opacity:0;transform:translateY(10px);transition:.5s}
+  .fade.show{opacity:1;transform:none}
+  .mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    font-size:12.5px;background:#070b16;border:1px solid var(--line);border-radius:10px;
+    padding:14px;color:#cdd6f4;white-space:pre;overflow:auto;line-height:1.55}
+  .kv{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .chip{font-size:12px;background:rgba(255,255,255,.05);border:1px solid var(--line);
+    padding:5px 11px;border-radius:999px;color:var(--muted)}
+  .chip b{color:var(--txt)}
+  svg{display:block;width:100%;height:auto}
+  .controls{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap;align-items:center}
+  .progress{height:5px;background:var(--line);border-radius:999px;overflow:hidden;flex:1;min-width:120px}
+  .progress > i{display:block;height:100%;width:0;background:var(--grad);transition:.4s}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;font-size:12px;color:var(--muted)}
+  .legend i{width:12px;height:12px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:-1px}
+  .metric{display:flex;gap:18px;flex-wrap:wrap;margin-top:6px}
+  .metric .m{background:#070b16;border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:130px}
+  .metric .m .v{font-size:22px;font-weight:850;color:var(--gold)}
+  .metric .m .l{font-size:11.5px;color:var(--muted)}
+  .ok{color:var(--green)!important}
+  /* BIZ */
+  .tl{position:relative;padding-left:22px;border-left:2px solid var(--line);margin-left:6px}
+  .tl .it{position:relative;padding:0 0 22px 16px}
+  .tl .it::before{content:"";position:absolute;left:-29px;top:4px;width:13px;height:13px;border-radius:50%;
+    background:var(--grad);box-shadow:0 0 12px rgba(139,108,240,.6)}
+  .tl .it h4{font-size:15px}
+  .tl .it p{color:var(--muted);font-size:13.5px}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:13px;text-align:center}
+  .note{font-size:12px;color:var(--muted);margin-top:10px;text-align:center}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>原昇量子<small>NeuPulse Studio · 中性原子全栈控制</small></div>
+    </div>
+    <div class="navlinks">
+      <a href="#intro">项目定位</a>
+      <a href="#demo">核心演示</a>
+      <a href="#biz">商业与团队</a>
+    </div>
+    <span class="tag">大创赛 · 演示原型</span>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="kicker">CONTROL-AS-A-SERVICE · 里德伯中性原子</span>
+    <h1>把量子算法<span class="g">一键编译</span>成<br/>中性原子机的<span class="g">高保真脉冲</span></h1>
+    <p class="sub">原昇量子面向里德伯中性原子量子计算平台，提出「编译–控制–门」一体化的全栈控制软件，
+      用多项式与反绝热方法，把灵活算法编译为原生多比特门、生成抗噪脉冲、预估保真度并直连硬件部署。</p>
+    <div class="cta">
+      <a class="btn primary" href="#demo">▶ 观看核心演示</a>
+      <a class="btn ghost" href="#intro">了解技术创新</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ 1. 项目定位 + 创新点 ============ -->
+<section id="intro">
+  <div class="wrap">
+    <div class="sec-title">三层技术支柱 · 一个流水线</div>
+    <div class="sec-sub">三篇前沿研究融合为「编译 → 控制 → 门」端到端管线，分别对应以下三层。</div>
+    <div class="grid g3">
+      <div class="card">
+        <div class="layer">① 编译层 · MÖBIUS 相位超图</div>
+        <h3>保留对角相位的原生多比特编译</h3>
+        <p>将 QAOA / QRAM / 对角电路映射为相位超图，调度器据里德堡阻塞与误差代价决定「原生多比特门执行」还是「分解」，释放中性原子 3/4 体原生能力。</p>
+        <div class="src">技术来源：<b>wangjinbo.pdf</b> · Möbius 相位超图编译</div>
+      </div>
+      <div class="card">
+        <div class="layer">② 控制层 · 切比雪夫–VMC 反绝热</div>
+        <h3>频域一致逼近奇异 AGP 算符</h3>
+        <p>第一类切比雪夫多项式一致逼近 AGP 中奇异的 1/ω 算符，前馈网络+变分蒙特卡洛求解矩阵元，把系数复杂度从指数压到多项式，全程经典硬件运行。</p>
+        <div class="src">技术来源：<b>多项式_.pdf</b> · Chebyshev–VMC 反绝热驱动</div>
+      </div>
+      <div class="card">
+        <div class="layer">③ 门原语层 · 无交叉回声 RAP</div>
+        <h3>零面积脉冲 · 天然抗激光噪声</h3>
+        <p>反对称零面积 Rabi + 对称失谐双脉冲，时间反演对称消去动力学相位；CZ 保真度 &gt;0.9999、CCZ &gt;0.999，±3% 涨落下仍达标。</p>
+        <div class="src">技术来源：<b>CZ_gate_PRB12.pdf</b> · 无交叉回声 RAP 门</div>
+      </div>
+    </div>
+
+    <div class="sec-title" style="margin-top:46px">四个自拟创新点（项目核心增量）</div>
+    <div class="sec-sub">在集成三层前沿方法之上的、面向「全栈控制软件」的原创设计。</div>
+    <div class="grid g2">
+      <div class="card innov"><div class="num">01</div>
+        <h3>编译–控制联合优化</h3>
+        <p>把编译阶段的原生门决策直接馈入反绝热脉冲生成，按门类型匹配最优驱动策略，而非三段独立黑箱，显著降低端到端保真度损失。</p></div>
+      <div class="card innov"><div class="num">02</div>
+        <h3>切比雪夫统一控制框架</h3>
+        <p>用同一套切比雪夫–VMC 流程统一处理单/多比特反绝热驱动，参数化替换门原语，降低工程复杂度、便于扩展新门型。</p></div>
+      <div class="card innov"><div class="num">03</div>
+        <h3>经典可部署的运行栈</h3>
+        <p>全部编译与脉冲生成在经典硬件完成，以「控制即服务 CaaS」形态交付，硬件厂商无需自研编译栈即可调用高保真脉冲。</p></div>
+      <div class="card innov"><div class="num">04</div>
+        <h3>噪声三重抑制</h3>
+        <p>零面积脉冲（一阶抑制激光强度噪声）+ 时间反演对称（消去动力学相位）+ 切比雪夫正则（压制高频发散）协同，抗噪声鲁棒性显著优于单点方案。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. 核心演示 ============ -->
+<section id="demo">
+  <div class="wrap">
+    <div class="sec-title">核心演示 · 全流程播放器</div>
+    <div class="sec-sub">点击下方「运行演示」，自动串联：算法导入 → 编译为相位超图 → 反绝热脉冲生成 → 保真度预估 → 硬件部署。</div>
+    <div class="player">
+      <!-- 步骤条 -->
+      <div class="stepper" id="stepper">
+        <div class="step" data-i="0"><div class="dot">1</div><div><div class="t">导入算法</div><div class="d">QASM / 对角电路</div></div></div>
+        <div class="step" data-i="1"><div class="dot">2</div><div><div class="t">编译超图</div><div class="d">相位超图 · 原生决策</div></div></div>
+        <div class="step" data-i="2"><div class="dot">3</div><div><div class="t">脉冲生成</div><div class="d">反绝热 Ω/Δ 波形</div></div></div>
+        <div class="step" data-i="3"><div class="dot">4</div><div><div class="t">保真预估</div><div class="d">门保真 · 噪声鲁棒</div></div></div>
+        <div class="step" data-i="4"><div class="dot">5</div><div><div class="t">硬件部署</div><div class="d">可下发指令序列</div></div></div>
+      </div>
+      <!-- 舞台 -->
+      <div class="stage" id="stage">
+        <!-- 由 JS 注入 -->
+      </div>
+    </div>
+    <div class="controls">
+      <button class="btn primary" id="runBtn">▶ 运行演示</button>
+      <button class="btn ghost" id="resetBtn">↺ 重置</button>
+      <div class="progress"><i id="prog"></i></div>
+    </div>
+    <div class="note">※ 本页为大学生创新创业训练计划演示原型，数据为依据三篇论文预置的示例，用于展示设计思路与可视化效果。</div>
+  </div>
+</section>
+
+<!-- ============ 3. 商业与团队 ============ -->
+<section id="biz">
+  <div class="wrap">
+    <div class="grid g2">
+      <div>
+        <div class="sec-title">商业模式与价值</div>
+        <div class="sec-sub">以 CaaS 服务量子硬件生态，连接「有原子阵列」与「有算法」的两端。</div>
+        <div class="card">
+          <h3>客户与付费</h3>
+          <p>① 中性原子量子硬件厂商 — 授权编译/控制栈（私有化部署）；② 高校量子实验室 — 科研订阅与教学版；③ 企业量子算法团队 — 按调用量计费 SaaS。</p>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <h3>核心壁垒</h3>
+          <p>三层方法均来自顶会/顶刊级前沿研究且已做原创集成（4 项自拟创新点），形成「编译–控制–门」软件闭环，硬件厂商难以短期自研替代。</p>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <h3>社会价值</h3>
+          <p>降低中性原子量子计算的使用门槛，赋能国产量子硬件生态与量子教育，呼应国家量子科技战略。</p>
+        </div>
+      </div>
+      <div>
+        <div class="sec-title">团队与里程碑</div>
+        <div class="sec-sub">学生团队主导，依托高校量子研究基础。</div>
+        <div class="tl">
+          <div class="it"><h4>2026 · 原型与算法验证</h4><p>完成三层方法集成与单文件演示原型，验证编译–控制联合优化思路。</p></div>
+          <div class="it"><h4>2027 · 软件栈 MVP</h4><p>实现端到端可调用控制栈，与 1–2 家硬件/实验室建立合作试点。</p></div>
+          <div class="it"><h4>2028 · CaaS 商业化</h4><p>上线 SaaS 与私有化部署，申请发明专利与软著，探索成果转化。</p></div>
+        </div>
+        <div class="card" style="margin-top:18px">
+          <h3>团队构成（示意）</h3>
+          <p>量子算法研究员 · 控制/脉冲工程师 · 全栈开发 · 商业运营。依托山西大学物理与量子研究背景，跨学科协作。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">原昇量子 NeuPulse Studio · 大创赛演示原型 · 技术来源：wangjinbo.pdf / 多项式_.pdf / CZ_gate_PRB12.pdf</div>
+</footer>
+
+<script>
+/* =========================================================
+   面向对象领域模型（满足「面向对象的网页」诉求）
+   实体：Algorithm / Hyperedge / PhaseHypergraph /
+         AntidiabaticPulse / FidelityReport
+   ========================================================= */
+class Hyperedge {
+  constructor(id, support, angle, decision, errorCost, reason){
+    this.id = id; this.support = support; this.angle = angle;
+    this.decision = decision; this.errorCost = errorCost; this.reason = reason;
+  }
+  get isMultiBody(){ return this.support.length >= 3; }
+  get size(){ return this.support.length; }
+}
+class PhaseHypergraph {
+  constructor(qubits, edges){ this.qubits = qubits; this.edges = edges; }
+  get nativeCount(){ return this.edges.filter(e => e.decision === 'native').length; }
+  get nativeRatio(){ return this.edges.length ? this.nativeCount / this.edges.length : 0; }
+  get multiBodyCount(){ return this.edges.filter(e => e.isMultiBody).length; }
+}
+class AntidiabaticPulse {
+  constructor(T, tau, Omega0, Delta0){ this.T = T; this.tau = tau; this.Omega0 = Omega0; this.Delta0 = Delta0; }
+  rabi(t){ const x = t / this.tau; return this.Omega0 * x * Math.exp(-x * x); }   // 反对称、零面积
+  detune(t){ const x = t / this.tau; return this.Delta0 * (1 - 2 * Math.exp(-x * x)); } // 对称
+  get isZeroArea(){ const n = 200, dt = 2 * this.T / n; let s = 0;
+    for(let i=0;i<=n;i++) s += this.rabi(-this.T + i*dt) * dt; return Math.abs(s) < 1e-6; }
+}
+class FidelityReport {
+  constructor(cz, ccz, overall){ this.cz = cz; this.ccz = ccz; this.overall = overall; }
+  meetTarget(th = 0.999){ return this.cz >= th && this.ccz >= th; }
+  robustness(){ const pts = [];
+    for(let d = -3; d <= 3.0001; d += 0.5){
+      const f = this.cz - 0.00018 * Math.abs(d) - 0.00008 * d * d;
+      pts.push([+d.toFixed(1), +Math.max(f,0).toFixed(5)]);
+    } return pts; }
+}
+class Algorithm {
+  constructor(name, qubits, type, qasm){ this.name = name; this.qubits = qubits; this.type = type; this.qasm = qasm; }
+}
+
+/* ===================== 预置演示数据（来自三篇论文） ===================== */
+const DEMO = {
+  algorithm: new Algorithm(
+    "QRAM 地址编码电路（演示示例）", 8, "QRAM / 对角电路",
+    "OPENQASM 2.0;\ninclude \"qelib1.inc\";\nqreg q[8];\n// 多体对角相位项（地址→数据 映射）\ncp(0.30*pi) q[0], q[1];      // 2-body\ncp(0.50*pi) q[2], q[3];      // 2-body\ncp(0.20*pi) q[4], q[5], q[6]; // 3-body 原生\ncp(0.40*pi) q[1], q[2], q[3], q[4]; // 4-body 原生\ncp(0.10*pi) q[6], q[7];      // 受 Rydberg 阻塞约束→分解"
+  ),
+  hypergraph: new PhaseHypergraph(8, [
+    new Hyperedge(0, [0,1], 0.30*Math.PI, 'native',   0.0008, '邻近原子、作用区可达'),
+    new Hyperedge(1, [2,3], 0.50*Math.PI, 'native',   0.0009, '邻近原子、作用区可达'),
+    new Hyperedge(2, [4,5,6], 0.20*Math.PI, 'native', 0.0015, '3-body 原生门，释放中性原子多体能力'),
+    new Hyperedge(3, [1,2,3,4], 0.40*Math.PI, 'native', 0.0021, '4-body 原生门，Möbius 调度可行'),
+    new Hyperedge(4, [6,7], 0.10*Math.PI, 'decompose', 0.0030, '里德堡阻塞约束，分解为 2-body 序列')
+  ]),
+  pulse: new AntidiabaticPulse(200, 60, 7.5, 12.0),
+  fidelity: new FidelityReport(0.99995, 0.9992, 0.9987)
+};
+
+/* ===================== SVG 绘制工具 ===================== */
+const SVGNS = "http://www.w3.org/2000/svg";
+function angleColor(a){ const hue = ((a % (2*Math.PI)) / (2*Math.PI)) * 330; return `hsl(${hue.toFixed(0)},75%,62%)`; }
+
+function drawHypergraph(host, hg){
+  const W = 600, H = 380, cx = W/2, cy = H/2, R = 140;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="相位超图">`;
+  // 节点
+  const pos = [];
+  for(let i=0;i<hg.qubits;i++){
+    const th = -Math.PI/2 + i * 2*Math.PI/hg.qubits;
+    pos.push([cx + R*Math.cos(th), cy + R*Math.sin(th)]);
+  }
+  // 超边
+  hg.edges.forEach(e=>{
+    const col = angleColor(e.angle);
+    const pts = e.support.map(k => pos[k]);
+    if(e.isMultiBody){
+      // 按质心角排序成简单多边形（凸包近似）
+      const m = pts.reduce((a,p)=>[a[0]+p[0],a[1]+p[1]],[0,0]).map(v=>v/pts.length);
+      pts.sort((p,q)=>Math.atan2(p[1]-m[1],p[0]-m[0]) - Math.atan2(q[1]-m[1],q[0]-m[0]));
+      const poly = pts.map(p=>`${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ');
+      const cmx = m[0], cmy = m[1];
+      s += `<polygon points="${poly}" fill="${col}" fill-opacity="0.14" stroke="${col}" stroke-width="2" stroke-opacity="0.9"><title>支撑集 {${e.support.join(',')}} · 相位 ${e.angle.toFixed(2)} rad · ${e.decision} · 误差代价 ${e.errorCost}</title></polygon>`;
+      s += `<circle cx="${cmx.toFixed(1)}" cy="${cmy.toFixed(1)}" r="4" fill="${col}"><title>中心 · ${e.size}体项</title></circle>`;
+    } else {
+      const [a,b] = pts;
+      s += `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${col}" stroke-width="3" stroke-opacity="0.9"><title>支撑集 {${e.support.join(',')}} · 相位 ${e.angle.toFixed(2)} rad · ${e.decision}</title></line>`;
+    }
+  });
+  // 节点圆
+  for(let i=0;i<hg.qubits;i++){
+    s += `<circle cx="${pos[i][0].toFixed(1)}" cy="${pos[i][1].toFixed(1)}" r="9" fill="#0a0e1a" stroke="#cdd6f4" stroke-width="2"><title>原子 q[${i}]</title></circle>`;
+    s += `<text x="${pos[i][0].toFixed(1)}" y="${(pos[i][1]+26).toFixed(1)}" fill="#9aa6c4" font-size="11" text-anchor="middle">q${i}</text>`;
+  }
+  s += `</svg>`;
+  host.innerHTML = s;
+}
+
+function drawPulse(host, p){
+  const W = 600, H = 300, mid = H/2, pad = 30;
+  const n = 240, x0 = -p.T, x1 = p.T;
+  const mapX = t => pad + (t - x0)/(x1 - x0) * (W - 2*pad);
+  let dO = '', dD = '';
+  for(let i=0;i<=n;i++){
+    const t = x0 + i*(x1 - x0)/n;
+    const yo = mid - 60 * p.rabi(t)/p.Omega0 * (mid-30)/ (mid-30);
+    const yd = mid + 60 * p.detune(t)/p.Delta0;
+    dO += (i? 'L':'M') + mapX(t).toFixed(1) + ' ' + (mid - 70 * p.rabi(t)/p.Omega0).toFixed(1) + ' ';
+    dD += (i? 'L':'M') + mapX(t).toFixed(1) + ' ' + (mid + 70 * p.detune(t)/p.Delta0).toFixed(1) + ' ';
+  }
+  let s = `<svg viewBox="0 0 ${W} ${H}">`;
+  s += `<line x1="${pad}" y1="${mid}" x2="${W-pad}" y2="${mid}" stroke="rgba(255,255,255,.15)" stroke-dasharray="4 4"/>`;
+  s += `<text x="${pad}" y="20" fill="#9aa6c4" font-size="12">Ω(t) 反对称·零面积</text>`;
+  s += `<path d="${dO}" fill="none" stroke="#ff9a52" stroke-width="2.5"/>`;
+  s += `<text x="${pad}" y="${H-8}" fill="#9aa6c4" font-size="12">Δ(t) 对称</text>`;
+  s += `<path d="${dD}" fill="none" stroke="#4fd6e0" stroke-width="2.5"/>`;
+  s += `<text x="${W-pad}" y="20" fill="#ff9a52" font-size="12" text-anchor="end">Rabi (MHz)</text>`;
+  s += `<text x="${W-pad}" y="${H-8}" fill="#4fd6e0" font-size="12" text-anchor="end">Detune (MHz)</text>`;
+  s += `</svg>`;
+  host.innerHTML = s;
+}
+
+function drawFidelity(host, rep){
+  const W = 600, H = 320, pad = 40;
+  const bars = [['CZ', rep.cz], ['CCZ', rep.ccz], ['整体线路', rep.overall]];
+  const bw = 110, gap = 40, x0 = pad;
+  let s = `<svg viewBox="0 0 ${W} ${H}">`;
+  // 阈值线
+  const yTh = pad + (1 - 0.999) * (H - 2*pad);
+  s += `<line x1="${pad}" y1="${yTh}" x2="${W-pad}" y2="${yTh}" stroke="#3ddc97" stroke-dasharray="5 4" stroke-width="1.5"/>`;
+  s += `<text x="${W-pad}" y="${yTh-6}" fill="#3ddc97" font-size="11" text-anchor="end">达标阈值 0.999</text>`;
+  bars.forEach((b,i)=>{
+    const x = x0 + i*(bw+gap);
+    const y = pad + (1 - b[1]) * (H - 2*pad);
+    const hgt = H - pad - y;
+    const col = b[1] >= 0.999 ? '#3ddc97' : '#ffd166';
+    s += `<rect class="bar" x="${x}" y="${y}" width="${bw}" height="${hgt}" rx="6" fill="${col}" style="transition:height .8s, y .8s"/>`;
+    s += `<text x="${x+bw/2}" y="${y-8}" fill="#e8ecf6" font-size="13" text-anchor="middle" font-weight="700">${b[1].toFixed(4)}</text>`;
+    s += `<text x="${x+bw/2}" y="${H-14}" fill="#9aa6c4" font-size="12" text-anchor="middle">${b[0]}</text>`;
+  });
+  s += `</svg>`;
+  host.innerHTML = s;
+  // 触发高度过渡
+  requestAnimationFrame(()=>{
+    const rects = host.querySelectorAll('.bar');
+    rects.forEach(r=>{ const full = r.getAttribute('height'); r.setAttribute('height','0'); r.setAttribute('y', H-pad);
+      requestAnimationFrame(()=>{ r.setAttribute('height',full); r.setAttribute('y', pad + (1 - +r.previousElementSibling.textContent) * (H - 2*pad)); }); });
+  });
+}
+
+function drawRobustness(host, rep){
+  const W = 600, H = 240, pad = 36;
+  const pts = rep.robustness();
+  const xs = pts.map(p=>p[0]), ys = pts.map(p=>p[1]);
+  const xmin = Math.min(...xs), xmax = Math.max(...xs), ymin = Math.min(...ys)-0.0005, ymax = 1;
+  const mx = x => pad + (x - xmin)/(xmax - xmin) * (W - 2*pad);
+  const my = y => pad + (1 - (y - ymin)/(ymax - ymin)) * (H - 2*pad);
+  let d = '';
+  pts.forEach((p,i)=> d += (i?'L':'M') + mx(p[0]).toFixed(1) + ' ' + my(p[1]).toFixed(1) + ' ');
+  let s = `<svg viewBox="0 0 ${W} ${H}">`;
+  s += `<line x1="${pad}" y1="${my(0.999)}" x2="${W-pad}" y2="${my(0.999)}" stroke="#3ddc97" stroke-dasharray="5 4"/>`;
+  s += `<text x="${W-pad}" y="${my(0.999)-5}" fill="#3ddc97" font-size="11" text-anchor="end">0.999</text>`;
+  s += `<path d="${d}" fill="none" stroke="#8b6cf0" stroke-width="2.5"/>`;
+  s += `<text x="${pad}" y="${H-8}" fill="#9aa6c4" font-size="11">Rabi 涨落 −3%</text>`;
+  s += `<text x="${W-pad}" y="${H-8}" fill="#9aa6c4" font-size="11" text-anchor="end">+3%</text>`;
+  s += `<text x="${pad}" y="16" fill="#9aa6c4" font-size="12">噪声鲁棒性：CZ 保真度 vs Rabi 涨落</text>`;
+  s += `</svg>`;
+  host.innerHTML = s;
+}
+
+/* ===================== 舞台渲染 ===================== */
+const STAGE = document.getElementById('stage');
+function renderStage(i){
+  const a = DEMO.algorithm, hg = DEMO.hypergraph, p = DEMO.pulse, f = DEMO.fidelity;
+  let html = '';
+  if(i === 0){
+    html = `<div class="stage-head"><h3>① 导入算法</h3><span class="pill">输入</span></div>
+      <div class="mono">${escapeHtml(a.qasm)}</div>
+      <div class="kv">
+        <span class="chip">类型 <b>${a.type}</b></span>
+        <span class="chip">量子比特 <b>${a.qubits}</b></span>
+        <span class="chip">名称 <b>${a.name}</b></span>
+      </div>
+      <p class="sub" style="margin-top:14px">算法以 QASM / 对角电路形式导入，自动解析多体相位项，进入编译层。</p>`;
+  } else if(i === 1){
+    html = `<div class="stage-head"><h3>② 编译为相位超图</h3><span class="pill">Möbius</span></div>
+      <div id="hgHost"></div>
+      <div class="legend">
+        <span><i style="background:${angleColor(0.3*Math.PI)}"></i>相位~0.3π</span>
+        <span><i style="background:${angleColor(0.5*Math.PI)}"></i>相位~0.5π</span>
+        <span><i style="background:${angleColor(0.2*Math.PI)}"></i>相位~0.2π（多体）</span>
+        <span><i style="background:${angleColor(0.4*Math.PI)}"></i>相位~0.4π（多体）</span>
+      </div>
+      <div class="kv" style="margin-top:14px">
+        <span class="chip">总相位项 <b>${hg.edges.length}</b></span>
+        <span class="chip">原生执行 <b>${hg.nativeCount}</b></span>
+        <span class="chip">多体原生 <b>${hg.multiBodyCount}</b></span>
+        <span class="chip">原生占比 <b>${(hg.nativeRatio*100).toFixed(0)}%</b></span>
+      </div>`;
+  } else if(i === 2){
+    html = `<div class="stage-head"><h3>③ 反绝热脉冲生成</h3><span class="pill">Chebyshev–VMC</span></div>
+      <div id="pulseHost"></div>
+      <div class="kv">
+        <span class="chip">脉冲时长 <b>${p.T} ns</b></span>
+        <span class="chip">特征宽度 <b>${p.tau} ns</b></span>
+        <span class="chip">Ω₀ <b>${p.Omega0} MHz</b></span>
+        <span class="chip">Δ₀ <b>${p.Delta0} MHz</b></span>
+        <span class="chip">零面积 <b class="${p.isZeroArea?'ok':''}">${p.isZeroArea?'是 ✓':'否'}</b></span>
+      </div>
+      <p class="sub" style="margin-top:12px">切比雪夫–VMC 近似 AGP，生成反对称零面积 Rabi 与对称失谐脉冲，驱动策略随门类型匹配。</p>`;
+  } else if(i === 3){
+    html = `<div class="stage-head"><h3>④ 保真度预估与噪声鲁棒性</h3><span class="pill">RAP</span></div>
+      <div id="fidHost"></div>
+      <div class="metric">
+        <div class="m"><div class="v ${f.meetTarget()?'ok':''}">${f.cz.toFixed(4)}</div><div class="l">CZ 门保真度</div></div>
+        <div class="m"><div class="v ${f.ccz>=0.999?'ok':''}">${f.ccz.toFixed(4)}</div><div class="l">CCZ 门保真度</div></div>
+        <div class="m"><div class="v">${f.overall.toFixed(4)}</div><div class="l">整体线路保真度</div></div>
+      </div>
+      <div id="robHost" style="margin-top:8px"></div>`;
+  } else if(i === 4){
+    const instr = JSON.stringify({
+      task: "deploy", backend: "rydberg-neutral-atom", qubits: a.qubits,
+      schedule: hg.edges.map(e => ({ support: e.support, kind: e.decision === 'native' ? `native-${e.size}body` : 'decomposed', phase: +e.angle.toFixed(3) })),
+      pulses: { T_ns: p.T, tau_ns: p.tau, Omega0_MHz: p.Omega0, Delta0_MHz: p.Delta0, zeroArea: p.isZeroArea },
+      fidelity: { cz: f.cz, ccz: f.ccz, overall: f.overall }
+    }, null, 2);
+    html = `<div class="stage-head"><h3>⑤ 硬件部署指令</h3><span class="pill">CaaS 下发</span></div>
+      <div class="mono">${escapeHtml(instr)}</div>
+      <p class="sub" style="margin-top:14px">控制即服务：编译–控制结果打包为可下发指令序列，直连中性原子机执行。原型阶段以 JSON 示意硬件接口格式。</p>`;
+  }
+  STAGE.innerHTML = `<div class="fade" id="fadeBox">${html}</div>`;
+  requestAnimationFrame(()=>{ const fb = document.getElementById('fadeBox'); if(fb) fb.classList.add('show'); });
+  // 子图异步绘制
+  if(i === 1){ const h = document.getElementById('hgHost'); if(h) drawHypergraph(h, hg); }
+  if(i === 2){ const h = document.getElementById('pulseHost'); if(h) drawPulse(h, p); }
+  if(i === 3){ const h = document.getElementById('fidHost'); if(h) drawFidelity(h, f);
+               const r = document.getElementById('robHost'); if(r) drawRobustness(r, f); }
+}
+
+function escapeHtml(s){ return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+/* ===================== 播放器控制 ===================== */
+const steps = Array.from(document.querySelectorAll('.step'));
+const prog = document.getElementById('prog');
+let cur = -1, timer = null;
+function setStep(i, markDone){
+  cur = i;
+  steps.forEach((s,idx)=>{
+    s.classList.toggle('active', idx === i);
+    s.classList.toggle('done', markDone ? idx < i : idx < i);
+  });
+  renderStage(i);
+  prog.style.width = ((i+1)/steps.length*100) + '%';
+}
+function gotoStep(i){ if(timer) clearInterval(timer); setStep(i); }
+function runDemo(){
+  if(timer) clearInterval(timer);
+  setStep(0, true);
+  let i = 0;
+  timer = setInterval(()=>{
+    i++;
+    if(i >= steps.length){ clearInterval(timer); timer = null;
+      steps.forEach(s=>s.classList.add('done')); return; }
+    setStep(i, true);
+  }, 2300);
+}
+function resetDemo(){ if(timer) clearInterval(timer); timer = null; cur = -1;
+  steps.forEach(s=>s.classList.remove('active','done'));
+  prog.style.width = '0';
+  STAGE.innerHTML = `<div class="fade show" style="display:flex;height:100%;align-items:center;justify-content:center;color:var(--muted);text-align:center;flex-direction:column;gap:10px">
+    <div style="font-size:46px">⚡</div><div>点击「运行演示」开始端到端流水线演示</div></div>`;
+}
+
+steps.forEach(s => s.addEventListener('click', ()=> gotoStep(+s.dataset.i)));
+document.getElementById('runBtn').addEventListener('click', runDemo);
+document.getElementById('resetBtn').addEventListener('click', resetDemo);
+
+// 初始化
+resetDemo();
+</script>
+</body>
+</html>

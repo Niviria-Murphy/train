@@ -1,0 +1,4 @@
+FILE: F:\10万\yuansheng-frontend\engine\gen_pulse_data.py
+has engine_endorsement marker: True
+has QUANTPULSE_PYTHON_DATA: False
+RC=0

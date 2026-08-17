@@ -1,0 +1,15 @@
+total 384
+drwxr-xr-x 1 Lenovo 197121     0 Aug 17 18:11 .
+drwxr-xr-x 1 Lenovo 197121     0 Aug 16 07:58 ..
+-rw-r--r-- 1 Lenovo 197121   661 Aug 17 19:02 _checkjs.js
+-rw-r--r-- 1 Lenovo 197121     0 Aug 17  2026 _dir.txt
+-rw-r--r-- 1 Lenovo 197121   137 Aug 17 18:59 _imp.txt
+-rw-r--r-- 1 Lenovo 197121    53 Aug 17 19:02 _jscheck.txt
+-rw-r--r-- 1 Lenovo 197121    10 Aug 17 19:02 _node.txt
+-rw-r--r-- 1 Lenovo 197121  1382 Aug 17 19:01 _run.txt
+-rw-r--r-- 1 Lenovo 197121   804 Aug 17  2026 _test.txt
+-rw-r--r-- 1 Lenovo 197121  2765 Aug 17 19:01 fidelity_compare.svg
+-rw-r--r-- 1 Lenovo 197121 20911 Aug 17 19:01 gen_pulse_data.py
+-rw-r--r-- 1 Lenovo 197121 50018 Aug 17 19:01 pulse_data.json
+-rw-r--r-- 1 Lenovo 197121 24240 Aug 17 18:43 quantpulse_engine.py
+-rw-r--r-- 1 Lenovo 197121  2742 Aug 17 18:49 test_engine.py

@@ -1,0 +1,2 @@
+checked 2 inline script blocks, syntax_errors=0
+RC=0
