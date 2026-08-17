@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>原昇量子 · 面向里德伯中性原子量子计算的全栈脉冲编译与控制软件 — PPT文字稿</title>
+<script>
+MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg-full.js" async></script>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2329; --sub:#5a6472;
+    --line:#e3e7ee; --brand:#3a2f7d; --brand2:#c2410c; --accent:#0e7490;
+    --ok:#15803d; --warn:#b45309; --chip:#eef1fb;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif;line-height:1.7}
+  header{padding:34px 28px 22px;background:linear-gradient(135deg,#3a2f7d,#0e7490);color:#fff}
+  header h1{margin:0 0 6px;font-size:25px;letter-spacing:.5px}
+  header .sub{font-size:14.5px;opacity:.92}
+  header .meta{margin-top:12px;font-size:12.5px;opacity:.82}
+  main{max-width:1080px;margin:0 auto;padding:22px 18px 60px}
+  .slide{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:22px 24px;margin:18px 0;box-shadow:0 2px 10px rgba(20,30,60,.05)}
+  .slide h2{margin:0 0 4px;font-size:19px;color:var(--brand);
+    border-left:5px solid var(--brand2);padding-left:12px}
+  .tag{display:inline-block;font-size:11px;color:var(--brand);background:var(--chip);
+    border-radius:999px;padding:2px 10px;margin-bottom:8px}
+  .points{margin:10px 0 4px;padding-left:20px}
+  .points li{margin:5px 0}
+  .script{background:#fafbfe;border:1px dashed var(--line);border-radius:10px;
+    padding:12px 14px;margin-top:12px;font-size:14px;color:#2c333d}
+  .script b{color:var(--brand2)}
+  .note{font-size:12px;color:var(--sub);margin-top:6px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+  th{background:#eef1fb;color:var(--brand)}
+  td.l{text-align:left}
+  .self{color:var(--brand2);font-weight:600}
+  .src{color:var(--accent);font-weight:600}
+  svg{display:block;margin:14px auto;max-width:100%}
+  .footer{text-align:center;color:var(--sub);font-size:12px;margin-top:30px}
+  code{background:#eef1fb;padding:1px 6px;border-radius:5px;font-size:12.5px}
+</style>
+</head>
+<body>
+<header>
+  <h1>原昇量子 · 面向里德伯中性原子量子计算的全栈脉冲编译与控制软件</h1>
+  <div class="sub">基于「切比雪夫多项式反绝热驱动 + 无交叉回声 RAP 高保真门 + Möbius 相位超图编译」的端到端量子软件栈</div>
+  <div class="meta">参赛赛道候选：中国国际「互联网+」大学生创新创业大赛 / 大学生创新创业训练计划（大创）　|　项目类型：量子软件·控制即服务（CaaS）</div>
+</header>
+
+<main>
+
+<!-- Slide 1 -->
+<div class="slide">
+  <span class="tag">封面</span>
+  <h2>原昇量子 — 让量子计算更快、更稳、更可扩展</h2>
+  <ul class="points">
+    <li>项目定位：<b>中性原子（里德伯）量子计算平台的编译–控制一体化软件栈</b></li>
+    <li>一句话价值：把「量子算法」自动编译、并生成「自带高保真脉冲」的硬件指令，跑在可扩展的中性原子量子机上</li>
+    <li>技术来源（三篇前沿研究融合）：高保真 CZ/CCZ 门、原生多比特对角编译、切比雪夫–VMC 反绝热驱动</li>
+  </ul>
+  <div class="script">
+    <b>【讲稿】</b>各位评委好，我们是「原昇量子」学生团队。中性原子量子计算因为可扩展性强，被公认为最有望实现大规模量子计算的平台之一——几百个原子阵列已经演示。但「算法怎么高效、高保真地跑上这台机器」始终是软瓶颈。我们做的不是一台新硬件，而是一套让中性原子量子机跑得更快、更稳、更省的<b>全栈控制软件</b>。它把三篇最新研究融会贯通，给行业提供「编译即带脉冲」的一站式方案。
+  </div>
+</div>
+
+<!-- Slide 2 -->
+<div class="slide">
+  <span class="tag">背景</span>
+  <h2>行业趋势：量子软件是下一个「卡脖子」战场</h2>
+  <ul class="points">
+    <li>平台拐点：中性原子（里德伯）阵列凭借长相干时间、可重构排布、天然多体相互作用，成为主流候选平台之一</li>
+    <li>软硬失衡：硬件（比特数、相干时间）进步快，但<b>编译与控制软件</b>滞后——算法到硬件存在保真度低、速度慢、难扩展三大损耗</li>
+    <li>战略刚需：国家量子科技战略对<b>自主量子软件生态</b>的迫切需求，NISQ 时代「控制即服务」尚属空白</li>
+  </ul>
+  <div class="script">
+    <b>【讲稿】</b>过去十年行业把钱砸在硬件比特数上；但进入 NISQ（含噪声中等规模量子）时代，大家逐渐意识到：<b>软件和控制才是决定量子机「能不能真正算对」的关键</b>。中性原子平台硬件潜力巨大，可它的原生多比特门能力、长相干时间，如果没有好的编译器和控制层去释放，就是浪费。这正是我们的切入点，也契合国家量子科技自主可控的战略方向。
+  </div>
+</div>
+
+<!-- Slide 3 -->
+<div class="slide">
+  <span class="tag">痛点</span>
+  <h2>四大痛点：为什么现在的量子机「算得慢、保真低、扩不大」</h2>
+  <ul class="points">
+    <li><b>痛点一 · 绝热速度极限：</b>绝热定理要求演化速度远低于最小能隙平方，窄能隙系统态制备时间近乎发散</li>
+    <li><b>痛点二 · 门保真度瓶颈：</b>中性原子两比特门保真度仍落后于超导/离子阱；传统 RAP 在能级交叉点能隙趋于零，非绝热泄漏封死了理论保真度上限</li>
+    <li><b>痛点三 · 编译损耗：</b>现有编译器把对角多体相位过早拆成 1/2 比特门，白白浪费中性原子<b>原生多比特受控相位</b>能力</li>
+    <li><b>痛点四 · 控制复杂度爆炸：</b>反绝热驱动的核心——AGP 含奇异 $1/\omega$ 算符，传统嵌套对易子方法随系统尺寸阶数近指数增长</li>
+  </ul>
+  <div class="script">
+    <b>【讲稿】</b>我们拆出四个相互咬合的痛点。第一，想「慢慢演化保准」就太慢；想「快」就在能级交叉点翻车。第二，门本身保真度上不去。第三，哪怕门好了，编译器又把多体结构拆没了。第四，想用反绝热驱动提速，数学上又遇到奇异算符、复杂度爆炸。四个痛点环环相扣，单点修补没用——必须<b>编译、控制、门原语一起重做</b>。
+  </div>
+  <div class="note">资料依据：多项式_.pdf（AGP 与 $1/\omega$ 奇异算符、绝热定理速度极限）；CZ_gate_PRB12.pdf（RAP 能级交叉泄漏）；wangjinbo.pdf（对角结构过早分解损耗）。</div>
+</div>
+
+<!-- Slide 4 -->
+<div class="slide">
+  <span class="tag">方案总览</span>
+  <h2>解决方案：三层融合的「编译–控制–门」一体化软件栈</h2>
+  <svg viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, PingFang SC, sans-serif">
+    <defs>
+      <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+        <path d="M0,0 L9,4.5 L0,9 z" fill="#0e7490"/>
+      </marker>
+    </defs>
+    <rect x="10" y="70" width="120" height="60" rx="10" fill="#eef1fb" stroke="#3a2f7d"/>
+    <text x="70" y="95" font-size="13" text-anchor="middle" fill="#1f2329">量子算法</text>
+    <text x="70" y="115" font-size="11" text-anchor="middle" fill="#5a6472">QAOA/QRAM/对角</text>
+    <rect x="160" y="70" width="130" height="60" rx="10" fill="#fff4ec" stroke="#c2410c"/>
+    <text x="225" y="92" font-size="13" text-anchor="middle" fill="#1f2329">① Möbius 编译层</text>
+    <text x="225" y="112" font-size="11" text-anchor="middle" fill="#5a6472">相位超图·原生多比特</text>
+    <rect x="320" y="70" width="130" height="60" rx="10" fill="#e7f6f9" stroke="#0e7490"/>
+    <text x="385" y="92" font-size="13" text-anchor="middle" fill="#1f2329">② 反绝热控制层</text>
+    <text x="385" y="112" font-size="11" text-anchor="middle" fill="#5a6472">切比雪夫–VMC AGP</text>
+    <rect x="480" y="70" width="130" height="60" rx="10" fill="#eaf6ec" stroke="#15803d"/>
+    <text x="545" y="92" font-size="13" text-anchor="middle" fill="#1f2329">③ 高保真门原语</text>
+    <text x="545" y="112" font-size="11" text-anchor="middle" fill="#5a6472">无交叉回声 RAP</text>
+    <line x1="130" y1="100" x2="158" y2="100" stroke="#0e7490" marker-end="url(#ar)"/>
+    <line x1="290" y1="100" x2="318" y2="100" stroke="#0e7490" marker-end="url(#ar)"/>
+    <line x1="450" y1="100" x2="478" y2="100" stroke="#0e7490" marker-end="url(#ar)"/>
+    <rect x="630" y="70" width="40" height="60" rx="8" fill="#f1eefb" stroke="#3a2f7d"/>
+    <text x="650" y="105" font-size="10" text-anchor="middle" fill="#1f2329">中性</text>
+    <text x="650" y="118" font-size="10" text-anchor="middle" fill="#1f2329">原子机</text>
+    <line x1="610" y1="100" x2="628" y2="100" stroke="#0e7490" marker-end="url(#ar)"/>
+    <text x="340" y="160" font-size="12" text-anchor="middle" fill="#5a6472">整套在经典硬件运行 → 作为「控制即服务（CaaS）」交付</text>
+  </svg>
+  <ul class="points">
+    <li><b>① 编译层</b>（源于 wangjinbo）：把算法保留对角相位结构，映射为相位超图</li>
+    <li><b>② 控制层</b>（源于 多项式_）：用切比雪夫多项式反绝热驱动生成高保真脉冲</li>
+    <li><b>③ 门原语层</b>（源于 CZ_gate）：无交叉回声 RAP 提供 >0.9999 保真度门</li>
+  </ul>
+  <div class="script">
+    <b>【讲稿】</b>我们的答案不是某一篇论文的单点，而是把三篇研究拼成一条流水线：算法进来，先在编译层保留多体相位、路由成原生多比特门；再在控制层用反绝热驱动算出高保真脉冲；最后落到高保真门原语上执行。关键是——<b>编译层在生成门的同时，就调用控制层把脉冲算好</b>，输出的是「自带脉冲的逻辑门」，而不是裸逻辑门。整套跑在经典电脑上，所以它能作为「控制即服务」直接卖给量子硬件公司。
+  </div>
+</div>
+
+<!-- Slide 5 -->
+<div class="slide">
+  <span class="tag">技术支柱 ③ · 门原语</span>
+  <h2>高保真门原语：无交叉回声 RAP（源于 CZ_gate_PRB12.pdf）</h2>
+  <ul class="points">
+    <li>脉冲设计：Rabi 频率 $\Omega(t)$ 取<b>反对称、零面积</b>双极结构，失谐 $\Delta(t)$ 取<b>对称单峰</b>，全程严格避开能级交叉点</li>
+    <li>相位消除：双脉冲时间反演对称<b>天然消去动力学相位</b>，无需激光相位跳变或额外相位补偿</li>
+    <li>噪声弹性：零面积脉冲对激光强度噪声提供<b>一阶抑制</b>；激光同时作用所有原子，支持大规模阵列并行</li>
+    <li>性能：双比特 CZ 保真度 <b>$>0.9999$</b>；三比特 CCZ <b>$>0.999$</b>；在 $\pm3\%$ Rabi、$\pm1\%$ 失谐涨落下仍 $>0.999$</li>
+  </ul>
+  <div class="script">
+    <b>【讲稿】</b>先说最底层——门。传统快速绝热 Passage 在能级交叉点能隙几乎为零，最容易出错。我们改用「无交叉回声 RAP」：Rabi 是反对称零面积脉冲、失谐是对称脉冲，系统全程不踩能级交叉的危险区；双脉冲的对称性还天然把动力学相位抵消掉，不用做精密相位补偿。结果是 CZ 门保真度超过 0.9999、CCZ 超过 0.999，而且对激光涨落极其鲁棒——这正好给上层编译和控制提供了可靠的原语。
+  </div>
+  <div class="note">公式：门保真度 $F = |\langle\psi|U^\dagger_{\rm CZ}\rho_f U_{\rm CZ}|\psi\rangle|^2$；扩展到 CCZ 无需重新优化参数。</div>
+</div>
+
+<!-- Slide 6 -->
+<div class="slide">
+  <span class="tag">技术支柱 ① · 编译</span>
+  <h2>原生多比特编译层：Möbius 相位超图（源于 wangjinbo.pdf）</h2>
+  <ul class="points">
+    <li>核心思想：用<b>子集格 Möbius 反演</b>把对角相位函数写成「相位超图」，每条超边记录多体相位的<b>支撑集与相位角</b></li>
+    <li>硬件感知调度：调度器综合原子运动、相互作用区容量、里德堡阻塞可行性、误差代价，决定「原生多比特执行」还是「分解」</li>
+    <li>原语定义：占位投影相位 $P_S(\theta)=\exp\!\Big(i\theta\prod_{j\in S} n_j\Big)$，$n_j=|1\rangle_j\langle1|$，仅当支撑集全体为 $|1\rangle$ 时施加相位</li>
+    <li>收益：在含可 exploitation 的<b>三/四体相位项</b>的算法实例上，无故障成功率与调度指标显著优于 ZAP、ZX 基线</li>
+  </ul>
+  <div class="script">
+    <b>【讲稿】</b>中间是编译层。关键洞察是：很多量子算法的对角相位本来就是「多体条件相位」，但现有编译器一上来就拆成单比特、两比特门，把硬件最值钱的原生多比特能力丢了。我们用 Möbius 反演把相位函数变成一张「相位超图」，让调度器看得见多体结构，能直接在中性原子上路由成原生多比特受控相位门——三个、四个比特一起作用。 benchmarks 显示，有三四体相位项的算法实例成功率明显提升。
+  </div>
+</div>
+
+<!-- Slide 7 -->
+<div class="slide">
+  <span class="tag">技术支柱 ② · 控制</span>
+  <h2>反绝热控制层：切比雪夫–VMC 近似 AGP（源于 多项式_.pdf）</h2>
+  <ul class="points">
+    <li>问题：AGP 矩阵元 $\langle\phi_m|\tilde A_\lambda|\phi_n\rangle = -i\hbar\,\langle\phi_m|\partial_\lambda H|\phi_n\rangle/\omega_{mn}$ 含奇异 $1/\omega$ 算符</li>
+    <li>频域用<b>第一类切比雪夫多项式</b>一致逼近 $1/\omega$：配合平方变量替换 + $\gamma$ 正则 + 奇多项式构造，抑制嵌套对易子范数增长与舍入累积</li>
+    <li>求解器：<b>前馈神经网络 + 变分蒙特卡洛（VMC）</b>估计 AGP 矩阵元与基态能量，对 Ising 链 / Bose–Hubbard / Kitaev 链三模型验证</li>
+    <li>复杂度：把 AGP 系数复杂度从<b>指数压到多项式</b>（Krylov 维数随系统尺寸多项式增长），且全程在<b>经典硬件</b>运行</li>
+  </ul>
+  <div class="script">
+    <b>【讲稿】</b>控制层解决「怎么又快又准地驱动」。反绝热驱动的灵魂是 AGP，但它里面有奇异的 $1/\omega$ 算符，传统方法复杂度随尺寸爆炸。我们用第一类切比雪夫多项式在频域做最优一致逼近，再配上前馈神经网络加变分蒙特卡洛去解矩阵元。结果是：系数复杂度从指数降到多项式，在经典电脑上就能为中等规模系统算出高保真度的反绝热脉冲——而且跨 Ising、Bose–Hubbard、Kitaev 三个模型通用。
+  </div>
+</div>
+
+<!-- Slide 8 -->
+<div class="slide">
+  <span class="tag">核心创新点（自拟）</span>
+  <h2>我们的四大创新点：把「三篇论文」合成「一个系统」</h2>
+  <ul class="points">
+    <li class="self">① 编译–控制联合优化（系统级组合创新）：编译层生成原生多比特门时<b>直接调用反绝热脉冲优化器</b>，输出「自带高保真脉冲序列的逻辑门」，而非裸逻辑门——三篇论文各自独立，此整合为其之外的增量创新</li>
+    <li class="self">② 多项式近似统一框架：用切比雪夫基<b>统一处理 AGP 与脉冲整形</b>，跨 Ising / Bose–Hubbard / Kitaev / Rydberg 多模型通用，降低工程碎片</li>
+    <li class="self">③ 经典–量子协同、NISQ 可部署：整套在经典硬件运行，作为<b>「控制即服务（CaaS）」</b>，不依赖量子机本身即可交付，显著降低使用门槛</li>
+    <li class="self">④ 噪声弹性内建：零面积脉冲（一阶激光噪声抑制）+ 反绝热校正（抑制非绝热跃迁）+ 几何相位，三重抑制叠加，保真度与鲁棒性同时提升</li>
+  </ul>
+  <div class="script">
+    <b>【讲稿】</b>这是项目的灵魂。三篇论文分别解决了门、编译、控制三个点，但没人把它们拧成一条产品流水线——这正是我们自拟的创新。第一，编译和控制联合优化，门一生成脉冲就算好；第二，用同一套切比雪夫框架统一处理 AGP 和脉冲，减少工程碎片；第三，整套跑在经典机，做成「控制即服务」，谁有中性原子硬件都能用；第四，把几种噪声抑制机制叠加，保真度和鲁棒性一起上。前两点是技术组合创新，后两点是商业模式与工程创新。
+  </div>
+  <div class="note">标注为「自拟」的部分为本团队在已有研究之上的系统整合与产品化创新，非论文原内容。</div>
+</div>
+
+<!-- Slide 9 -->
+<div class="slide">
+  <span class="tag">验证 · 对比</span>
+  <h2>性能指标对比：本方案相对传统路线全面占优</h2>
+  <table>
+    <tr><th>维度</th><th>传统 RAP</th><th>变分 CD（变分 AGP）</th><th class="self">原昇量子（本方案）</th></tr>
+    <tr><td class="l">两比特门保真度</td><td>受交叉点限制</td><td>—</td><td class="self">CZ &gt; 0.9999</td></tr>
+    <tr><td class="l">多比特扩展</td><td>需重优化参数</td><td>依赖 ansatz 表达力</td><td class="self">CCZ &gt; 0.999，免重优化</td></tr>
+    <tr><td class="l">对角编译效率</td><td>过早拆成 1/2 比特门</td><td>不涉及</td><td class="self">原生多比特，3/4 体项更优</td></tr>
+    <tr><td class="l">AGP 复杂度</td><td>—</td><td>ansatz 受限 / 近指数</td><td class="self">多项式（经典硬件可解）</td></tr>
+    <tr><td class="l">噪声鲁棒性</td><td>一般</td><td>一般</td><td class="self">零面积+反绝热+几何相位三重抑制</td></tr>
+    <tr><td class="l">硬件依赖</td><td>需精密相位控制</td><td>需量子资源</td><td class="self">经典运行，CaaS 交付</td></tr>
+  </table>
+  <div class="script">
+    <b>【讲稿】</b>把三条技术路线拉到一起比：传统 RAP 卡在交叉点、保真度有天花板；变分 CD 受 ansatz 表达力限制、复杂度仍偏高；而我们——门保真度超过四个九、多比特免重优化、对角编译保留原生多体、AGP 复杂度降到多项式、噪声三重抑制，而且全部在经典机跑。一句话：又快、又准、又能扩、又不挑硬件。
+  </div>
+  <div class="note">表中「传统 RAP / 变分 CD」数据为论文给出的基线对比；本方案列为三技术融合后的预期综合指标。</div>
+</div>
+
+<!-- Slide 10 -->
+<div class="slide">
+  <span class="tag">产品 · 商业</span>
+  <h2>产品形态与商业模式</h2>
+  <ul class="points">
+    <li><b>产品：</b>开源内核 + 商业 SDK / 云端 SaaS「NeuPulse Studio」——功能覆盖 算法导入 → 自动编译 → 反绝热脉冲生成 → 保真度预估 → 硬件部署</li>
+    <li><b>商业模式：</b>(1) SaaS 订阅费；(2) 私有化部署（量子硬件厂/涉密院所）；(3) 按门调用计费；(4) 高校科研/教学授权</li>
+    <li><b>目标客户：</b>中性原子量子硬件初创、高校量子实验室、科研院所、企业量子研发部门</li>
+    <li><b>交付形态：</b>「控制即服务（CaaS）」——客户有硬件，我们用软件帮它把保真度和速度拉满</li>
+  </ul>
+  <div class="script">
+    <b>【讲稿】</b>我们做的是软件生意，不是卖机器。产品叫 NeuPulse Studio：用户把量子算法丢进来，平台自动编译、生成反绝热脉冲、预估保真度、导出可直接烧进中性原子机的指令。赚钱有四种方式——云端订阅、私有化部署、按调用次数计费、还有高校教学授权。客户很清楚：谁在造中性原子量子机，谁就需要我们把它的硬件潜力释放出来。这就是「控制即服务」。
+  </div>
+</div>
+
+<!-- Slide 11 -->
+<div class="slide">
+  <span class="tag">市场 · 价值</span>
+  <h2>市场规模与社会价值</h2>
+  <ul class="points">
+    <li><b>市场：</b>量子软件与控制层随量子计算整机市场同步高速增长，中性原子平台融资与装机量近年快速攀升，配套软件生态尚处早期空白</li>
+    <li><b>社会价值一：</b>突破绝热定理速度极限，加速可用量子态制备，服务国家量子科技战略</li>
+    <li><b>社会价值二：</b>降低量子编程与高保真控制门槛，让更多高校/中小企业「用得起」中性原子量子资源</li>
+    <li><b>社会价值三：</b>产学研结合，培养「物理+计算机+商科」交叉型量子工程人才</li>
+  </ul>
+  <div class="script">
+    <b>【讲稿】</b>量子整机市场在涨，但配套软件还是蓝海。我们卡位「控制层」这个尚未被巨头垄断的环节。社会价值上，它突破绝热速度极限、服务国家量子战略；更现实的是——把高保真控制做成人人可用的服务，让更多学校和中小企业用得起量子算力；同时它本身就是一个绝佳的跨学科育人项目。
+  </div>
+  <div class="note">市场判断基于行业公开趋势；具体规模数据建议答辩前用权威研报（如 IDC、BCG 量子计算预测）补 1–2 张数据图。</div>
+</div>
+
+<!-- Slide 12 -->
+<div class="slide">
+  <span class="tag">壁垒 · 竞品</span>
+  <h2>竞争壁垒与差异化</h2>
+  <ul class="points">
+    <li><b>技术壁垒：</b>「编译–控制联合优化」组合专利/算法壁垒；切比雪夫统一框架的多模型泛化能力</li>
+    <li><b>数据壁垒：</b>脉冲库与保真度实测数据飞轮——每服务一台硬件就沉淀更优脉冲，形成正循环</li>
+    <li><b>生态壁垒：</b>与中性原子硬件厂商/实验室的早期绑定，成为其「官方控制栈」</li>
+    <li><b>竞品对比：</b>Qiskit 等通用编译器、各硬件厂自研控制、ZX 系中性原子编译——差异化在<b>原生多比特 + 反绝热联合优化</b>，而非通用门分解</li>
+  </ul>
+  <div class="script">
+    <b>【讲稿】</b>别人为什么短期抄不走？第一，编译和控制联合优化是组合创新，单做编译或单做控制都到不了这个效果；第二，我们越用越聪明，脉冲库滚雪球；第三，谁先和硬件厂绑定量产，谁就成标准。对比 Qiskit 这类通用编译器和各厂自研控制，我们的标签是「原生多比特 + 反绝热联合优化」，这是差异化的命门。
+  </div>
+</div>
+
+<!-- Slide 13 -->
+<div class="slide">
+  <span class="tag">团队 · 计划</span>
+  <h2>团队与执行路线图</h2>
+  <ul class="points">
+    <li><b>团队：</b>物理（量子多体/控制）+ 计算机（编译/ML）+ 商科（市场/运营）交叉学生团队，导师来自量子计算方向</li>
+    <li><b>里程碑：</b>M1 编译器+控制层原型（开源内核）→ M2 与 1 家硬件/实验室合作实测保真度 → M3 种子轮与 SaaS 上线 → M4 多硬件适配与产品化</li>
+    <li><b>风险与对策：</b>硬件合作不确定性 → 先以仿真基准+开源社区建立信任；人才缺口 → 校企联合培养</li>
+  </ul>
+  <div class="script">
+    <b>【讲稿】</b>我们团队正好是物理、计算机、商科三块拼齐：物理同学懂 AGP 和脉冲，计算机同学做编译器和神经网络求解器，商科同学跑市场和运营。路线图很务实——先做开源原型证明能跑，再找一家实验室实测保真度，然后拿种子轮上云。最大风险是硬件合作谈不拢，对策是先靠开源和仿真基准在社区里建立信誉。
+  </div>
+</div>
+
+<!-- Slide 14 -->
+<div class="slide">
+  <span class="tag">愿景</span>
+  <h2>愿景：让每一台中性原子量子计算机，都跑上「原昇」控制栈</h2>
+  <ul class="points">
+    <li>短期：成为中性原子平台的「标配控制软件」，把保真度与速度推向实用阈值</li>
+    <li>长期：以 CaaS 形态，让量子计算从「实验室奢侈品」变为「可订阅的基础设施」</li>
+    <li>口号：<b>原昇量子 —— 让量子计算更快、更稳、更可扩展</b></li>
+  </ul>
+  <div class="script">
+    <b>【讲稿】</b>总结一句：硬件决定量子计算的「天花板」，而我们做的控制软件，决定它能摸多高。我们想成为中性原子量子机的标配控制栈，短期把保真度和速度顶到实用线，长期把它做成「可订阅的量子基础设施」。原昇量子——让量子计算更快、更稳、更可扩展。谢谢评委！
+  </div>
+</div>
+
+<div class="footer">本文字稿依据三篇参考论文（多项式_.pdf / wangjinbo.pdf / CZ_gate_PRB12.pdf）整合撰写；标注「自拟」部分为团队系统级创新，供「互联网+」/大创答辩使用。建议答辩前补充：市场数据图、专利/软著清单、与合作实验室的意向函。</div>
+
+</main>
+</body>
+</html>
