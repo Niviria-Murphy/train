@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>量脉 QuantPulse · 项目计划书</title>
+<style>
+  :root{
+    --ink:#16203a; --sub:#5b6580; --line:#e3e7f0; --bg:#fff;
+    --purple:#6d4ed8; --orange:#e8762b; --cyan:#1f9aa8; --soft:#f5f3fc;
+    --gold:#b8860b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    color:var(--ink); background:#eef0f6; line-height:1.78; font-size:15px}
+  .page{max-width:880px;margin:0 auto;background:var(--bg);padding:54px 60px;
+    box-shadow:0 10px 40px rgba(20,30,60,.10);min-height:100vh}
+  h1,h2,h3{color:var(--ink);line-height:1.35}
+  .cover{text-align:center;padding:40px 0 30px;border-bottom:3px solid var(--purple);margin-bottom:34px}
+  .cover .kicker{letter-spacing:6px;color:var(--orange);font-size:13px;font-weight:700}
+  .cover h1{font-size:30px;margin:16px 0 10px;font-weight:850}
+  .cover .en{color:var(--sub);font-size:15px;font-weight:600;letter-spacing:.5px}
+  .cover .meta{margin-top:22px;color:var(--sub);font-size:13.5px}
+  .cover .meta b{color:var(--ink)}
+  h2{font-size:20px;margin:38px 0 14px;padding-left:13px;border-left:5px solid var(--purple)}
+  h3{font-size:16px;margin:20px 0 8px;color:var(--purple)}
+  p{margin:9px 0}
+  ul,ol{margin:9px 0 9px 22px}
+  li{margin:5px 0}
+  .lead{background:var(--soft);border:1px solid var(--line);border-left:4px solid var(--orange);
+    padding:16px 20px;border-radius:8px;color:#2a3350}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+  th{background:var(--soft);color:var(--ink);font-weight:700}
+  tr:nth-child(even) td{background:#faf9fe}
+  .tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:999px;
+    background:rgba(109,78,216,.10);color:var(--purple);border:1px solid rgba(109,78,216,.3);margin-right:6px}
+  .src{font-size:12.5px;color:var(--sub);border-top:1px dashed var(--line);margin-top:8px;padding-top:6px}
+  .src b{color:var(--orange)}
+  .pill{font-size:12px;color:#fff;background:var(--cyan);padding:2px 9px;border-radius:6px}
+  .ok{color:var(--cyan);font-weight:700}
+  .num{display:inline-flex;width:26px;height:26px;align-items:center;justify-content:center;
+    background:var(--purple);color:#fff;border-radius:7px;font-weight:800;font-size:13px;margin-right:8px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:680px){.grid2{grid-template-columns:1fr}.page{padding:30px 22px}}
+  .foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--sub);font-size:12.5px;text-align:center}
+  .small{font-size:13px;color:var(--sub)}
+  @media print{body{background:#fff}.page{box-shadow:none;max-width:none;padding:0 8mm}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="cover">
+    <div class="kicker">大学生创新创业训练计划 · 项目计划书</div>
+    <h1>量脉 QuantPulse：<br/>面向里德伯中性原子量子机的高保真脉冲编译控制软件</h1>
+    <div class="en">QuantPulse — High-Fidelity Pulse Compilation &amp; Control Software for Rydberg Neutral-Atom Quantum Machines</div>
+    <div class="meta">
+      项目类型：<b>创新训练 / 创业训练</b>　|　依托单位：<b>山西大学</b><br/>
+      负责人：<b>________（请填）</b>　|　团队规模：<b>4 人（跨学科）</b>　|　申报年度：<b>2026</b>
+    </div>
+  </div>
+
+  <!-- 一、项目概要 -->
+  <h2>一、项目概要</h2>
+  <div class="lead">
+    里德伯中性原子（Rydberg neutral-atom）是当下最具可扩展潜力的量子硬件路线之一，但把量子算法真正"跑"在原子阵列上，需跨越「算法 → 编译 → 脉冲 → 保真 → 部署」的鸿沟。现有工具链在编译、控制、门原语三层彼此割裂，导致端到端保真度损失大、使用门槛高。<b>本项目「量脉 QuantPulse」</b>提出"编译–控制–门"一体化的全栈控制软件，以"控制即服务（CaaS）"形态交付：将量子算法编译为保留对角相位的<b>相位超图</b>，用<b>切比雪夫–变分蒙特卡洛（Chebyshev–VMC）反绝热驱动</b>生成抗噪脉冲，并以<b>无交叉回声 RAP 门</b>实现 CZ 保真度 &gt;0.9999、CCZ &gt;0.999。项目已构建可演示前端原型，验证设计思路与可视化效果，目标为量子硬件厂商、高校实验室与企业算法团队提供低门槛的高保真控制能力。
+  </div>
+
+  <!-- 二、背景与痛点 -->
+  <h2>二、项目背景与痛点</h2>
+  <h3>2.1 背景</h3>
+  <p>量子计算进入 NISQ（含噪声中等规模）时代，中性原子平台凭借<b>千量级可扩展量子比特阵列</b>、<b>长相干时间</b>与<b>原生多体里德堡相互作用</b>，成为继超导、离子阱之后的重要路线。但硬件优势要转化为可用算力，关键瓶颈在软件层——如何把高层算法高效、保真地编译为原子机可直接执行的激光脉冲序列。</p>
+  <h3>2.2 核心痛点</h3>
+  <ul>
+    <li><b>编译层割裂</b>：主流编译把多体对角相位"拍平"为 2 比特门序列，<b>浪费中性原子原生多体相互作用能力</b>，门数与误差显著上升。</li>
+    <li><b>控制层昂贵</b>：反绝热（counter-diabatic）驱动需近似奇异的 AGP 算符，传统方法系数复杂度随系统规模<b>指数增长</b>，难以在经典硬件实时生成。</li>
+    <li><b>门原语受噪</b>：激光强度/失谐涨落直接侵蚀双比特门保真度，常规脉冲对噪声仅零阶抑制，难达容错阈值附近。</li>
+    <li><b>端到端断层</b>：三层工具各自为战，算法研究者与硬件厂商之间缺乏统一控制栈，<b>复用成本与门槛高</b>。</li>
+  </ul>
+
+  <!-- 三、项目目标 -->
+  <h2>三、项目目标</h2>
+  <ul>
+    <li><b>总目标</b>：构建"编译–控制–门"一体化的中性原子量子机全栈控制软件，以 CaaS 形态降低量子计算使用门槛。</li>
+    <li><b>技术目标</b>：原生多体编译占比显著提升；切比雪夫–VMC 将脉冲生成复杂度降至多项式级；CZ/CCZ 保真度分别达到 &gt;0.9999 / &gt;0.999，且在 ±3% Rabi、±1% 失谐涨落下仍达标。</li>
+    <li><b>成果目标</b>：可演示软件原型 + 发明专利/软著 + 论文 + 大创结题与竞赛获奖。</li>
+  </ul>
+
+  <!-- 四、创新点 -->
+  <h2>四、项目创新点</h2>
+  <table>
+    <tr><th style="width:8%">编号</th><th style="width:22%">创新点</th><th>说明（项目核心增量）</th></tr>
+    <tr><td><span class="num">1</span></td><td>编译–控制联合优化</td><td>将编译阶段的"原生门决策"直接馈入反绝热脉冲生成，按门类型匹配最优驱动策略，而非三段独立黑箱，显著降低端到端保真度损失。</td></tr>
+    <tr><td><span class="num">2</span></td><td>切比雪夫统一控制框架</td><td>用同一套 Chebyshev–VMC 流程统一处理单/多比特反绝热驱动，参数化替换门原语，降低工程复杂度、便于扩展新门型。</td></tr>
+    <tr><td><span class="num">3</span></td><td>经典可部署的运行栈</td><td>全部编译与脉冲生成在经典硬件完成，以 CaaS 交付，硬件厂商无需自研编译栈即可调用高保真脉冲。</td></tr>
+    <tr><td><span class="num">4</span></td><td>噪声三重抑制</td><td>零面积脉冲（一阶抑制激光强度噪声）+ 时间反演对称（消去动力学相位）+ 切比雪夫正则（压制高频发散）协同，抗噪声鲁棒性优于单点方案。</td></tr>
+  </table>
+
+  <!-- 五、研究内容与技术路线 -->
+  <h2>五、研究内容与技术路线</h2>
+  <p>端到端管线：<span class="tag">算法导入</span><span class="tag">编译为相位超图</span><span class="tag">反绝热脉冲生成</span><span class="tag">保真度预估</span><span class="tag">硬件部署</span>。三层方法对应以下研究内容，均基于前沿研究并做原创集成：</p>
+
+  <h3>① 编译层 · Möbius 相位超图</h3>
+  <p>将 QAOA / QRAM / 对角电路映射为相位超图：节点=原子/比特，超边=多体相位项。调度器依据里德堡阻塞可行性、原子运动与误差代价，决定"原生多比特门执行"或"分解"，释放 3/4 体原生能力。</p>
+  <div class="src">技术来源：<b>wangjinbo.pdf</b> · Möbius 相位超图编译</div>
+
+  <h3>② 控制层 · 切比雪夫–VMC 反绝热驱动</h3>
+  <p>频域用第一类切比雪夫多项式一致逼近 AGP 中奇异的 1/ω 算符（配合平方变量替换 + γ 正则 + 奇多项式构造）；前馈神经网络 + 变分蒙特卡洛求解 AGP 矩阵元与基态能量，把系数复杂度从指数压到多项式，全程经典硬件运行。</p>
+  <div class="src">技术来源：<b>多项式_.pdf</b> · Chebyshev–VMC 反绝热驱动</div>
+
+  <h3>③ 门原语层 · 无交叉回声 RAP</h3>
+  <p>反对称零面积 Rabi + 对称失谐双脉冲，全程避开能级交叉；时间反演对称天然消去动力学相位，零面积脉冲对激光强度噪声一阶抑制。CZ 保真度 &gt;0.9999、CCZ &gt;0.999，±3% 涨落下仍 &gt;0.999。</p>
+  <div class="src">技术来源：<b>CZ_gate_PRB12.pdf</b> · 无交叉回声 RAP 门</div>
+
+  <!-- 六、产品方案 -->
+  <h2>六、产品与系统方案</h2>
+  <p>产品以 <b>Web 端 CaaS</b> 形态交付：用户导入算法（QASM / 对角电路）→ 在线查看编译后的相位超图 → 一键触发反绝热脉冲生成 → 查看保真度与噪声鲁棒性报告 → 导出可下发指令序列。当前进度已构建<b>可演示前端原型</b>（单页流水线播放器，含相位超图、脉冲波形、保真度曲线的可视化），用于验证设计思路与展示效果；后续工程化阶段将后端算法引擎（Möbius 编译 / Chebyshev–VMC 驱动 / RAP 门原语）以可插拔服务接入。</p>
+  <div class="grid2">
+    <div class="card" style="border:1px solid var(--line);border-radius:10px;padding:14px">
+      <h3 style="margin-top:0">面向对象领域建模</h3>
+      <p class="small">Algorithm / PhaseHypergraph / Hyperedge / AntidiabaticPulse / FidelityReport 建模为对象，物理派生指标在对象内计算，便于测试与复用。</p>
+    </div>
+    <div class="card" style="border:1px solid var(--line);border-radius:10px;padding:14px">
+      <h3 style="margin-top:0">可插拔控制栈</h3>
+      <p class="small">前端与算法引擎经契约解耦，后端就绪后仅替换传输层，页面与状态零改动，降低联调风险。</p>
+    </div>
+  </div>
+
+  <!-- 七、市场与商业 -->
+  <h2>七、市场分析与商业模式</h2>
+  <table>
+    <tr><th>客户群体</th><th>付费方式</th><th>核心价值</th></tr>
+    <tr><td>中性原子量子硬件厂商</td><td>私有化部署 / 授权</td><td>无需自研编译–控制栈，直接获得高保真脉冲能力</td></tr>
+    <tr><td>高校量子实验室</td><td>科研订阅 / 教学版</td><td>降低实验门槛，支撑教学与课题</td></tr>
+    <tr><td>企业量子算法团队</td><td>SaaS 按量计费</td><td>专注算法，控制交给量脉</td></tr>
+  </table>
+  <p><b>核心壁垒</b>：三层方法均源自顶会/顶刊级前沿研究且已做原创集成（4 项创新点），形成"编译–控制–门"软件闭环，硬件厂商难以短期自研替代。<b>社会价值</b>：降低中性原子量子计算使用门槛，赋能国产量子硬件生态与量子教育，呼应国家量子科技战略。</p>
+
+  <!-- 八、实施计划 -->
+  <h2>八、实施计划与里程碑</h2>
+  <table>
+    <tr><th style="width:16%">阶段</th><th style="width:14%">时间</th><th>主要任务</th><th style="width:18%">交付物</th></tr>
+    <tr><td>原型验证</td><td>2026</td><td>三层方法集成、前端可演示原型、编译–控制联合优化验证</td><td>演示原型 + 技术文档</td></tr>
+    <tr><td>MVP</td><td>2027</td><td>端到端可调用控制栈、与 1–2 家硬件/实验室合作试点</td><td>可用软件 + 合作意向</td></tr>
+    <tr><td>商业化</td><td>2028</td><td>SaaS/私有化上线、申请发明专利与软著、探索成果转化</td><td>产品 + 知识产权</td></tr>
+  </table>
+
+  <!-- 九、团队 -->
+  <h2>九、团队组成与分工</h2>
+  <table>
+    <tr><th style="width:22%">角色</th><th>职责</th></tr>
+    <tr><td>量子算法研究员</td><td>相位超图编译、算法导入与保真度评估</td></tr>
+    <tr><td>控制/脉冲工程师</td><td>Chebyshev–VMC 反绝热驱动、RAP 门原语实现</td></tr>
+    <tr><td>全栈开发</td><td>Web 端 CaaS、可视化与部署接口</td></tr>
+    <tr><td>商业运营</td><td>市场、专利/软著、成果转化与参赛</td></tr>
+  </table>
+  <p class="small">团队依托山西大学物理与量子研究背景，跨学科协作（物理 + 计算机 + 商科）。</p>
+
+  <!-- 十、预期成果 -->
+  <h2>十、预期成果</h2>
+  <ul>
+    <li>可演示软件原型 1 套（已具备前端演示版）</li>
+    <li>发明专利 1–2 项、软件著作权 1–2 项</li>
+    <li>学术论文 1 篇（编译–控制联合优化方向）</li>
+    <li>大创项目结题，力争省级以上竞赛获奖</li>
+  </ul>
+
+  <!-- 十一、经费预算 -->
+  <h2>十一、经费预算（概算）</h2>
+  <table>
+    <tr><th>用途</th><th style="width:18%">占比</th><th style="width:22%">说明</th></tr>
+    <tr><td>算力与开发设备</td><td>35%</td><td>经典计算资源、开发终端</td></tr>
+    <tr><td>文献与调研</td><td>20%</td><td>论文获取、行业调研</td></tr>
+    <tr><td>知识产权与参赛</td><td>25%</td><td>专利/软著、竞赛差旅</td></tr>
+    <tr><td>合作与验证</td><td>20%</td><td>实验室合作、数据验证</td></tr>
+  </table>
+
+  <!-- 十二、风险与对策 -->
+  <h2>十二、风险分析与对策</h2>
+  <table>
+    <tr><th style="width:20%">风险</th><th>对策</th></tr>
+    <tr><td>反绝热近似误差</td><td>以 RAP 门原语兜底校验，保真度预估与硬件反馈闭环迭代</td></tr>
+    <tr><td>跨学科协作成本</td><td>明确的面向对象接口契约，降低模块耦合与沟通成本</td></tr>
+    <tr><td>硬件生态早期</td><td>先做 CaaS 演示与教学市场，轻资产验证需求</td></tr>
+    <tr><td>技术可行性存疑</td><td>三层方法均有已发表研究支撑，项目侧重"集成与工程化"而非从零突破</td></tr>
+  </table>
+
+  <!-- 十三、可行性分析 -->
+  <h2>十三、可行性分析</h2>
+  <ul>
+    <li><b>技术可行</b>：编译、控制、门三层均基于已发表前沿方法，项目创新在于"集成与联合优化"，风险可控。</li>
+    <li><b>团队可行</b>：跨学科团队覆盖算法、控制、开发、商业，且有高校量子研究基础。</li>
+    <li><b>资源可行</b>：前端原型已跑通，后续以经典算力为主，无需自建量子硬件。</li>
+  </ul>
+
+  <!-- 附录 -->
+  <h2>附录 · 技术来源文献</h2>
+  <ul>
+    <li><b>wangjinbo.pdf</b> — Möbius 相位超图编译（编译层）</li>
+    <li><b>多项式_.pdf</b> — Chebyshev–VMC 反绝热驱动（控制层）</li>
+    <li><b>CZ_gate_PRB12.pdf</b> — 无交叉回声 RAP 门（门原语层）</li>
+  </ul>
+
+  <div class="foot">
+    量脉 QuantPulse · 大学生创新创业训练计划项目计划书（草案）<br/>
+    技术来源：wangjinbo.pdf / 多项式_.pdf / CZ_gate_PRB12.pdf　|　本计划书为申报草案，负责人与具体数据请据实填写
+  </div>
+
+</div>
+</body>
+</html>
